@@ -3,32 +3,40 @@
 
 import json
 
-
 class FileStorage:
     """A Class to store serialize data into Files"""
 
-    __file_path = ""
+    __file_path = "file.json"
     __objects = {}
 
     def all(self):
         """Returns a dictionary of all objects available"""
-        return __objects
+        return self.__objects
 
     def new(self, obj):
         """Sets a new object with the correct key"""
-        self.__objects[obj.name + '.' + obj.id] = obj.id
-        
+        FileStorage.__objects[type(obj).__name__ + '.' + obj.id] = obj
+
     def save(self):
         """Serializes objects to the JSON file"""
-        obj_dict = self.__dict__.copy()
-
-        with open(self.__file_path, 'w', encoding="utf-8") as f:
-            json.dump(obj_dict, f)
+        obj_dict = {k:v.to_dict() for k,v in FileStorage.__objects.items()}
+        
+        try:
+            with open(self.__file_path, 'w', encoding="utf-8") as f:
+                obj_json = json.dumps(obj_dict)
+                f.write(obj_json)
+        except Exception:
+            raise Exception
 
     def reload(self):
         """deserializes the JSON file to a dictionary of objects"""
+        from models.base_model import BaseModel
         try:
             with open(self.__file_path, 'r', encoding="utf-8") as f:
-                self.__objects = json.load(f)
+                obj_dicts = json.load(f)
+                if len(obj_dicts) > 0:
+                    for k, v in obj_dicts.items():
+                        obj = BaseModel(**v)
+                        FileStorage.__objects[k] = obj
         except Exception:
             pass
