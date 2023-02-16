@@ -26,17 +26,25 @@ class FileStorage:
                 obj_json = json.dumps(obj_dict)
                 f.write(obj_json)
         except Exception:
-            raise Exception
+            pass
 
     def reload(self):
         """deserializes the JSON file to a dictionary of objects"""
-        from models.base_model import BaseModel
         try:
             with open(self.__file_path, 'r', encoding="utf-8") as f:
                 obj_dicts = json.load(f)
                 if len(obj_dicts) > 0:
                     for k, v in obj_dicts.items():
-                        obj = BaseModel(**v)
+                        obj = self.classes()[v["__class__"]](**v)
                         FileStorage.__objects[k] = obj
         except Exception:
             pass
+
+    def classes(self):
+        """Returns a dictionary of valid classes and their references"""
+        from models.base_model import BaseModel
+        from models.user import User
+
+        classes = {"BaseModel": BaseModel,
+                   "User": User}
+        return classes

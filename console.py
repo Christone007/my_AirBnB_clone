@@ -29,11 +29,11 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def do_create(self, line):
-        """Creates a new instance of BaseModel"""
+        """Creates a new instance of a given Class"""
         if len(line) == 0:
             print("** class name missing **")
-        elif line == "BaseModel":
-            newModel = BaseModel()
+        elif line in storage.classes():
+            newModel = storage.classes()[line]()
             newModel.save()
             print(newModel.id)
         else:
@@ -46,7 +46,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             line_arr = line.split()
             if len(line_arr) == 1:
-                if line_arr[0] != "BaseModel":
+                if line_arr[0] not in storage.classes():
                     print("** class doesn't exist **")
                 else:
                     print("** instance id missing **")
@@ -54,7 +54,7 @@ class HBNBCommand(cmd.Cmd):
                 class_name = line_arr[0]
                 id_string = line_arr[1]
 
-                if class_name != "BaseModel":
+                if class_name not in storage.classes():
                     print("** class doesn't exist **")
                 else:
                     try:
@@ -71,7 +71,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             line_arr = line.split()
             if len(line_arr) == 1:
-                if line_arr[0] != "BaseModel":
+                if line_arr[0] not in storage.classes():
                     print("** class doesn't exist **")
                 else:
                     print("** instance id missing **")
@@ -79,7 +79,7 @@ class HBNBCommand(cmd.Cmd):
                 class_name = line_arr[0]
                 id_string = line_arr[1]
 
-                if class_name != "BaseModel":
+                if class_name not in storage.classes():
                     print("** class doesn't exist **")
                 else:
                     try:
@@ -120,12 +120,12 @@ class HBNBCommand(cmd.Cmd):
         else:
             line_arr = line.split(' ', 3)
             if len(line_arr) == 1:
-                if line_arr[0] != "BaseModel":
+                if line_arr[0] not in storage.classes():
                     print("** class doesn't exist **")
                 else:
                     print("** instance id missing **")
             elif len(line_arr) == 2:
-                if line_arr[0] != "BaseModel":
+                if line_arr[0] not in storage.classes():
                     print("** class doesn't exist **")
                 else:
                     obj_key = line_arr[0] + '.' + line_arr[1]
@@ -134,7 +134,7 @@ class HBNBCommand(cmd.Cmd):
                     else:
                         print("** attribute name missing **")
             elif len(line_arr) == 3:
-                if line_arr[0] != "BaseModel":
+                if line_arr[0] not in storage.classes():
                     print("** class doesn't exist **")
                 else:
                     obj_key = line_arr[0] + '.' + line_arr[1]
